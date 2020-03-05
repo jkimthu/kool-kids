@@ -1,7 +1,7 @@
 %% check one: dynamicOutlines
 
 
-% Goal: Draw tracked ellipses over movie xy31 from 2018-01-31.
+% Goal: Draw tracked ellipses over movie xy31 from 2018-02-01.
 %       Label pre-divisional cells in blue and newborn cells in orange.
 %       Print particle number, length and width next to tracked cell.
 
@@ -21,8 +21,8 @@
 %     7. woohoo!
 
 
-% last edit: jen, 2019 Feb 19
-% commit: visualize birth events, display size metrics (L,W)
+% last edit: jen, 2019 Mar 5
+% commit: edit comments to reflect correct dataset (experiment date)
 
 
 % OK LET'S GO!
