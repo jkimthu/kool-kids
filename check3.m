@@ -74,11 +74,11 @@ birthVol = volumes(birthEvent == 1);
 
 % 5. plot scatter
 figure(1)
-scatter(birthWid,birthVol)
+scatter(birthVol,birthWid)
 ylabel('Width at birth (um)')
 xlabel('Volume at birth (cubic um)')
 title('Single-cell width vs vol, xy31, 2018-02-01')
-xlim([1 1.8])
+
 
 
 
