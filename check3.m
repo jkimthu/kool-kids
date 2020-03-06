@@ -1,4 +1,4 @@
-%% check three: cell size distributions
+%% check three: single-cell width vs volume at birth
 
 
 % Goal: Plot scatter of single-cell width vs volume at birth
