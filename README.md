@@ -17,3 +17,8 @@ Analyze same xy31 from 2018-02-01.
 ## check4.m
 Scatter plot of single-cell volume at division vs volume at birth.
 Analyze same xy31 from 2018-02-01.
+
+## check5.m
+Crop each newborn cell from original data image.
+Compile stack for comparison with Dieter.
+Modified from check1.m.
