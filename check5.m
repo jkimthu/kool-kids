@@ -20,11 +20,12 @@
 %            i. load current image
 %           ii. loop through newborn cells and crop
 %          iii. save cropped image
-%     4. woohoo!
+%           iv. concatenate each newborn cell's stats
+%     4. save stats in kool-kids repo!
 
 
-% last edit: jen, 2019 Mar 29
-% commit: cropped newborns for dieter
+% last edit: jen, 2019 Mar 31
+% commit: edited to save a concatenated list of stats
 
 
 % OK LET'S GO!
@@ -46,6 +47,9 @@ xy = 31;
 date = storedMetaData{index}.date;
 expType = storedMetaData{index}.experimentType;
 
+% 0. initialize variables for collecting stats 
+stats = nan(1,4); % four columns for frame, cell ID, length and width
+counter = 0;
 
 % 1. initialize image data
 conversionFactor = 6.5/60;      % scope5 Andor COSMOS = 6.5um pixels / 60x magnification
@@ -117,8 +121,8 @@ for img = 1:length(names)
     cla
     Image = imread(names{img});
     filename = strcat('dynamicOutlines-birthEvents-xy',num2str(xy),'-frame',num2str(img),'.tif');
-    %figure(1)
-    %imshow(Image,'DisplayRange',[2200 4800]); %lowering right # increases num sat'd pxls
+%     figure(1)
+%     imshow(Image,'DisplayRange',[2200 4800]); %lowering right # increases num sat'd pxls
     
     
     % ii. determine number of cells at birth in current frame
@@ -135,26 +139,28 @@ for img = 1:length(names)
         
     else
         
-        % iii. else, isolate data for each image
+        % iii. else, isolate newborm data for each image
+        is_newborn = birthEvents{img,1};
         dm_currentImage = xyData_fullOnly(xyData_fullOnly(:,16) == img,:);    % col 16 = frame #
+        newbornData_currentImage = dm_currentImage(is_newborn == 1,:);
         
-        majorAxes = getGrowthParameter(dm_currentImage,'length');         %  lengths
-        minorAxes = getGrowthParameter(dm_currentImage,'width');          %  widths
+        majorAxes = getGrowthParameter(newbornData_currentImage,'length');         %  lengths
+        minorAxes = getGrowthParameter(newbornData_currentImage,'width');          %  widths
         
-        centroid_X = getGrowthParameter(dm_currentImage,'x_pos');          % x coordinate of centroid
-        centroid_Y = getGrowthParameter(dm_currentImage,'y_pos');          % y coordinate of centroid
-        angles = getGrowthParameter(dm_currentImage,'angle');             % angle of rotation of fit ellipses
+        centroid_X = getGrowthParameter(newbornData_currentImage,'x_pos');          % x coordinate of centroid
+        centroid_Y = getGrowthParameter(newbornData_currentImage,'y_pos');          % y coordinate of centroid
+        angles = getGrowthParameter(newbornData_currentImage,'angle');             % angle of rotation of fit ellipses
 
-        IDs = getGrowthParameter(dm_currentImage,'trackID');              % track ID as assigned in ND2Proc_XY
+        IDs = getGrowthParameter(newbornData_currentImage,'trackID');              % track ID as assigned in ND2Proc_XY
         
         
         % iv. for each cell at birth in current image, draw ellipse in Tomato
         if cells_birth > 0
             
-            birth_IDs = IDs(fr_births == 1);
-            for pp = 1:length(birth_IDs)
+            for pp = 1:length(IDs)
                 
-                currentP_b = find(IDs == birth_IDs(pp));
+                counter = counter + 1;
+                currentP_b = IDs(pp); %find(IDs == birth_IDs(pp));
                 
                 % determine (x,y) coordinate of upper left pixel in crop
                 x_coord = (centroid_X(pp)/conversionFactor) - 50;
@@ -172,14 +178,21 @@ for img = 1:length(names)
                 output(1:size(Image_crop,1),1:size(Image_crop,2)) = Image_crop;
                 imwrite(output,strcat('crop-', num2str(img), '-' , num2str(birth_IDs(pp)) , '.tif'));
                 
+                % store stats for each newborn cell
+                stats(counter,1) = img; % column 1 = frame
+                stats(counter,2) = IDs(pp); % column 2 = cell ID
+                stats(counter,3) = majorAxes(pp); % column 3 = length
+                stats(counter,4) = minorAxes(pp); % column 4 = width
+                
             end
             
         end
-        clear pp color birth_IDs currentP_b
+        clear pp color currentP_b
         
     end
     
 end
-
+cd('/Users/jen/kool-kids/')
+save('check5_stats.mat','stats')
 
 
