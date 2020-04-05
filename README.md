@@ -22,3 +22,6 @@ Analyze same xy31 from 2018-02-01.
 Crop each newborn cell from original data image.
 Compile stack for comparison with Dieter.
 Modified from check1.m.
+
+##check6.m
+plot scatter of average volume accumulation rate vs birth volume for individual cells from xy31 of 2018-02-01. for qualitative trend comparisons with Dieter.
